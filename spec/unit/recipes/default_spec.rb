@@ -40,15 +40,15 @@ describe 'mongodb::default' do
       expect(chef_run).to start_service 'mongodb-org'
     end
 
-    it 'should create a proxy.conf template in /etc/nginx/sites-available' do
-      expect(chef_run).to create_template("/etc/nginx/sites-available/mongo.conf").with_variables(proxy_port: 27017)
+    it 'should create a mongo.conf template in /etc/nginx/sites-available' do
+      expect(chef_run).to create_template("/etc/mongodb/sites-available/mongo.conf").with_variables(proxy_port: 27017)
     end
     it 'should create a symlink of proxy.conf from sites-available to sites-enabled' do
-      expect(chef_run).to create_link("/etc/nginx/sites-enabled/mongo.conf").with_link_type(:symbolic)
+      expect(chef_run).to create_link("/etc/mongodb/sites-enabled/mongo.conf").with_link_type(:symbolic)
     end
 
     it 'should delete the symlink from the default config in sites-enabled' do
-      expect(chef_run).to delete_link "/etc/nginx/sites-enabled/default"
+      expect(chef_run).to delete_link "/etc/mongodb/sites-enabled/default"
     end
 
     it 'updates all sources' do
