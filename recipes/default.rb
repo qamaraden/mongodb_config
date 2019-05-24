@@ -29,12 +29,12 @@ template '/lib/systemd/system/mongod.service' do
   notifies :restart, 'service[mongodb]'
 end
 
-link '/lib/systemd/system/mongod.service' do
-  to '/etc/mongodb/sites-available/mongo.conf'
+link '/etc/mongodb.conf' do
+  to '/lib/systemd/system/mongod.service'
   notifies :restart, 'service[mongodb]'
 end
 
-link '/etc/mongodb/sites-enabled/default' do
+link '/etc/mongodb.conf' do
   notifies :restart, 'service[mongodb]'
   action :delete
 end
