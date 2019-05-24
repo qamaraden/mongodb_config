@@ -8,20 +8,28 @@ apt_update 'update_sources' do
   action :update
 end
 
-package 'mongodb'
+package 'mongodb-org' do
+  action [ :update ]
+end
 
-service 'mongodb' do
+service 'mongodb-org' do
   supports status: true, restart: true, reload: true
   action [:enable, :start]
 end
 
-template '/etc/mongodb/sites-available/mongo.conf' do
+template '/etc/mongodb.conf' do
   source 'mongo.conf.erb'
   variables port: node['mongodb']['port'] , ip_addresses: node['mongodb']['ip_addresses']
   notifies :restart, 'service[mongodb]'
 end
 
-link '/etc/mongodb/sites-enabled/mongo.conf' do
+template '/lib/systemd/system/mongod.service' do
+  source 'mongo.service.erb'
+  variables port: node['mongodb']['port'] , ip_addresses: node['mongodb']['ip_addresses']
+  notifies :restart, 'service[mongodb]'
+end
+
+link '/lib/systemd/system/mongod.service' do
   to '/etc/mongodb/sites-available/mongo.conf'
   notifies :restart, 'service[mongodb]'
 end
