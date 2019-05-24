@@ -17,17 +17,17 @@ end
 
 template '/etc/nginx/sites-available/mongo.conf' do
   source 'mongo.conf.erb'
-  variables port: node['mongo']['port'] , ip_addresses: node['mongo']['ip_addresses']
-  notifies :restart, 'service[mongo]'
+  variables port: node['mongodb']['port'] , ip_addresses: node['mongodb']['ip_addresses']
+  notifies :restart, 'service[mongodb]'
 end
 
 link '/etc/nginx/sites-enabled/mongo.conf' do
   to '/etc/nginx/sites-available/mongo.conf'
-  notifies :restart, 'service[mongo]'
+  notifies :restart, 'service[mongodb]'
 end
 
 link '/etc/nginx/sites-enabled/default' do
-  notifies :restart, 'service[mongo]'
+  notifies :restart, 'service[mongodb]'
   action :delete
 end
 

@@ -40,7 +40,7 @@ describe 'mongodb::default' do
       expect(chef_run).to start_service 'mongodb-org'
     end
 
-    it 'should create a mongo.conf template in /etc/nginx/sites-available' do
+    it 'should create a mongo.conf template in /etc/mongodb/sites-available' do
       expect(chef_run).to create_template("/etc/mongodb/sites-available/mongo.conf").with_variables(proxy_port: 27017)
     end
     it 'should create a symlink of proxy.conf from sites-available to sites-enabled' do
@@ -58,8 +58,6 @@ describe 'mongodb::default' do
     it 'should add mongo to the sources list' do
       expect(chef_run).to add_apt_repository('mongodb-org')
     end
-
-
 
 
   end
