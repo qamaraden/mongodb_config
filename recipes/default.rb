@@ -15,18 +15,18 @@ service 'mongodb' do
   action [:enable, :start]
 end
 
-template '/etc/nginx/sites-available/mongo.conf' do
+template '/etc/mongodb/sites-available/mongo.conf' do
   source 'mongo.conf.erb'
   variables port: node['mongodb']['port'] , ip_addresses: node['mongodb']['ip_addresses']
   notifies :restart, 'service[mongodb]'
 end
 
-link '/etc/nginx/sites-enabled/mongo.conf' do
-  to '/etc/nginx/sites-available/mongo.conf'
+link '/etc/mongodb/sites-enabled/mongo.conf' do
+  to '/etc/mongodb/sites-available/mongo.conf'
   notifies :restart, 'service[mongodb]'
 end
 
-link '/etc/nginx/sites-enabled/default' do
+link '/etc/mongodb/sites-enabled/default' do
   notifies :restart, 'service[mongodb]'
   action :delete
 end
