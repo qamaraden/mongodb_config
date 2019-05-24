@@ -15,14 +15,14 @@ service 'mongodb' do
   action [:enable, :start]
 end
 
-template '/etc/nginx/sites-available/mongo_proxy.conf' do
+template '/etc/nginx/sites-available/mongo.conf' do
   source 'proxy.conf.erb'
-  variables proxy_port: node['nginx']['mongo_proxy_port']
+  variables proxy_port: node['mongo']['mongo_port']
   notifies :restart, 'service[nginx]'
 end
 
-link '/etc/nginx/sites-enabled/mongo_proxy.conf' do
-  to '/etc/nginx/sites-available/mongo_proxy.conf'
+link '/etc/nginx/sites-enabled/mongo.conf' do
+  to '/etc/nginx/sites-available/mongo.conf'
   notifies :restart, 'service[mongodb]'
 end
 
