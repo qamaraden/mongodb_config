@@ -1,1 +1,4 @@
-# mongodb_config
+# node
+
+TODO: Enter the cookbook description here.
+
