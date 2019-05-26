@@ -4,7 +4,6 @@
 #
 # Copyright:: 2019, The Authors, All Rights Reserved.
 
-
 require 'spec_helper'
 
 describe 'mongodb::default' do
@@ -20,44 +19,38 @@ describe 'mongodb::default' do
       expect { chef_run }.to_not raise_error
     end
 
-    it 'converges successfully' do
-      expect { chef_run }.to_not raise_error
+    it 'runs apt get update' do
+      expect(chef_run).to update_apt_update 'update'
     end
 
-    it 'runs apt get update' do
-      expect(chef_run).to update_apt_update 'update_sources'
+    it 'should create a mongod.conf template in /etc/' do
+      expect(chef_run).to create_template("/etc/mongod.conf").with_variables(proxy_port: 27017)
+    end
+
+    it 'should create a mongod.service template in /lib/systemd/system/' do
+      expect(chef_run).to create_template("/lib/systemd/system/mongod.service").with_variables(proxy_port: 27017)
+    end
+
+    it 'should add mongo to the sources list' do
+      expect(chef_run).to add_apt_repository 'mongodb-org'
+    end
+
+    it 'should upgrade mongod' do
+      expect(chef_run).to upgrade_package 'mongodb-org'
     end
 
     it 'should install mongodb' do
       expect(chef_run).to install_package 'mongodb-org'
     end
 
-    it 'should enable the mongodb service' do
-      expect(chef_run).to enable_service 'mongodb-org'
+    it 'should enable mongod service' do
+      expect(chef_run).to enable_service "mongod"
     end
+    it 'should start mongod service' do
+        expect(chef_run).to start_service "mongod"
+    end
+    at_exit { ChefSpec::Coverage.report! }
 
-    it 'should start the mongodb service' do
-      expect(chef_run).to start_service 'mongodb-org'
-    end
-
-    it 'should create a mongo.conf template in /etc/mongo.conf' do
-      expect(chef_run).to create_template("/etc/mongo.conf").with_variables(proxy_port: 27017)
-    end
-    it 'should create a symlink of proxy.conf from sites-available to sites-enabled' do
-      expect(chef_run).to create_link("/lib/systemd/system/mongod.service").with_link_type(:symbolic)
-    end
-
-    it 'should delete the symlink from the default config in mongo' do
-      expect(chef_run).to delete_link "/etc/mongo.conf"
-    end
-
-    it 'updates all sources' do
-      expect(chef_run).to update_apt_update('update')
-    end
-
-    it 'should add mongo to the sources list' do
-      expect(chef_run).to add_apt_repository('mongodb-org')
-    end
 
 
   end
