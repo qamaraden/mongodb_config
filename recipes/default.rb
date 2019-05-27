@@ -24,19 +24,18 @@ end
 template '/lib/systemd/system/mongod.service' do
   source 'mongod.service.erb'
   variables proxy_port: 27017
-  owner "root"
-  group "root"
-  mode 0755
+  owner "mongodb"
+  group "mongodb"
+  mode 00644  # -rw-r--r--
 
   notifies :restart, 'service[mongod]'
 end
 
 template '/etc/mongod.conf' do
   source 'mongod.conf.erb'
-  # node['mongo']['ip_adresses']
-  owner "root"
-  group "root"
-  mode 0755
+  owner "mongodb"
+  group "mongodb"
+  mode 00644 # -rw-r--r--
   variables proxy_port: 27017
 
   notifies :restart, 'service[mongod]'
